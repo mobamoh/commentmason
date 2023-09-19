@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 
+	"github.com/mobamoh/commentmason/internal/comment"
 	"github.com/mobamoh/commentmason/internal/db"
+	transportHttp "github.com/mobamoh/commentmason/internal/transport/http"
 )
 
 // Run is responsible for the instantiation
@@ -15,6 +17,12 @@ func Run() error {
 		return err
 	}
 	if err = db.MigrateDB(); err != nil {
+		return err
+	}
+
+	cmtService := comment.NewService(db)
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err = httpHandler.Serve(); err != nil {
 		return err
 	}
 	return nil

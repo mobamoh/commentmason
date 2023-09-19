@@ -20,6 +20,9 @@ type Comment struct {
 
 type Store interface {
 	GetComment(context.Context, string) (Comment, error)
+	CreateComment(context.Context, Comment) (Comment, error)
+	DeleteComment(context.Context, string) error
+	UpdateComment(context.Context, string, Comment) (Comment, error)
 }
 
 type Service struct {
@@ -41,14 +44,22 @@ func (service *Service) GetComment(ctx context.Context, id string) (Comment, err
 	return comment, nil
 }
 
-func (Service *Service) UpdateComment(ctx context.Context, comment Comment) error {
-	return ErrNotImplemented
+func (service *Service) UpdateComment(ctx context.Context, id string, comment Comment) (Comment, error) {
+	updatedCmt, err := service.Store.UpdateComment(ctx, id, comment)
+	if err != nil {
+		return Comment{}, err
+	}
+	return updatedCmt, nil
 }
 
-func (Service *Service) DeleteComment(ctx context.Context, id string) error {
-	return ErrNotImplemented
+func (service *Service) DeleteComment(ctx context.Context, id string) error {
+	return service.Store.DeleteComment(ctx, id)
 }
 
-func (Service *Service) CreateComment(ctx context.Context, comment Comment) (Comment, error) {
-	return Comment{}, ErrNotImplemented
+func (service *Service) CreateComment(ctx context.Context, comment Comment) (Comment, error) {
+	insertedCmt, err := service.Store.CreateComment(ctx, comment)
+	if err != nil {
+		return Comment{}, err
+	}
+	return insertedCmt, nil
 }
