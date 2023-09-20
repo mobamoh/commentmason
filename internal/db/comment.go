@@ -26,6 +26,7 @@ type CommentRow struct {
 }
 
 func (db *Database) GetComment(ctx context.Context, id string) (comment.Comment, error) {
+	// _, err := db.Client.ExecContext(ctx, SELECT pg_sleep(16))
 	var cmtRow CommentRow
 	row := db.Client.QueryRowContext(ctx,
 		`SELECT id, slug, body, author
